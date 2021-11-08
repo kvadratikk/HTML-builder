@@ -1,26 +1,31 @@
 const fs = require('fs')
 const path = require('path')
-const { readdir, mkdir, rm } = require('fs/promises')
 
 const filesFolder = path.join(__dirname, 'files')
 const copyFolder = path.join(__dirname, 'files-copy')
 
-async function init() {
-  await dir()
-  await copyFiles()
-}
+fs.access(copyFolder, err => {
+  if (err) {
+    fs.mkdir(copyFolder, { recursive: true }, () => {
+      copyFiles(filesFolder, copyFolder)
+    })
+  } else {
+    fs.rm(copyFolder, { recursive: true }, () => {
+      fs.mkdir(copyFolder, { recursive: true }, () => {
+        copyFiles(filesFolder, copyFolder)
+      })
+    })
+  }
+})
 
-async function dir() {
-  await rm(copyFolder, { recursive: true, force: true })
-  await mkdir(copyFolder, { recursive: true })
-}
+function copyFiles(src, copy) {
+  fs.readdir(src, { withFileTypes: true }, (err, files) => {
+    if (err) console.log(err)
 
-async function copyFiles() {
-  const files = await readdir(filesFolder, { withFileTypes: true })
+    files.forEach(file => {
+      fs.copyFile(path.join(src, file.name), path.join(copy, file.name), () => {
 
-  files.forEach(file => {
-    fs.copyFile(path.join(__dirname, 'files', file.name), path.join(__dirname, 'files-copy', file.name), (err) => { if (err) console.log(err) })
+      })
+    })
   })
 }
-
-init()

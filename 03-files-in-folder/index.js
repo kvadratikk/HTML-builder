@@ -17,7 +17,7 @@ fs.readdir(root,
             if (err)
               console.log(err)
             else
-              console.log(`${path.parse(file.name).name} - ${path.parse(file.name).ext.slice(1)} - ${stat.size / 1024}kb`)
+              console.log(`${path.parse(file.name).name} - ${path.parse(file.name).ext.slice(1)} - ${stat.size}b`)
           })
         }
       })

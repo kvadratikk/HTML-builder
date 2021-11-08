@@ -2,34 +2,29 @@ const fs = require('fs')
 const path = require('path')
 const readline = require("readline")
 
-const root = path.join(__dirname, 'text.txt')
+const rootPath = path.join(__dirname, 'text.txt')
+const writeStream = fs.createWriteStream(rootPath)
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
-});
-
-rl.question("write something ", function (input) {
-  write(input)
-
-  rl.on('line', function (input) {
-    write(input)
-  })
+  output: writeStream
 })
 
-rl.on("close", function () {
+writeStream.on('open', () => {
+  console.log('write something ')
+})
+
+rl.on('line', (input) => {
+  if (input.trim().toLowerCase() === 'exit') {
+    close()
+  } else {
+    writeStream.write(input + '\n')
+  }
+})
+
+process.on("SIGINT", () => {
   close()
 })
-
-function write(input) {
-  if (input == 'exit') close()
-
-  rl.resume()
-
-  fs.appendFile(root, input + ' ', function (error) {
-    if (error) throw error
-  })
-}
 
 function close() {
   console.log("ok, bye")
