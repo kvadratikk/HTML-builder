@@ -25,7 +25,7 @@ function copyHtml(template, components) {
   fs.readFile(template, 'utf8', (err, template) => {
     if (err) console.log(err)
 
-    let html = template
+    let html = template + ''
 
     fs.readdir(components, (err, files) => {
       if (err) console.log(err)
