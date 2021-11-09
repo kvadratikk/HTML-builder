@@ -17,9 +17,9 @@ writeStream.on('open', () => {
 rl.on('line', (input) => {
   if (input.trim().toLowerCase() === 'exit') {
     close()
-  } else {
-    writeStream.write(input + '\n')
   }
+
+  fs.appendFile(rootPath, input + '\n', err => { if (err) console.log(err) })
 })
 
 process.on("SIGINT", () => {
